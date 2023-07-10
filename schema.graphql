@@ -1,0 +1,173 @@
+enum ActionType {
+  CREATE
+  JOIN
+  WITHDRAW_CLAIM
+  WITHDRAW_REFUND
+}
+
+type MultiLot @entity {
+  id: ID!
+  duration: BigInt!
+  positions: [MultiLotPosition!] @derivedFrom(field: "lot")
+  positionIds: [String!]
+  # hack ^ (not possible to access derived fields in mappings: https://github.com/graphprotocol/graph-node/issues/4004)
+  actions: [MultiLotAction!] @derivedFrom(field: "lot")
+  startEpoch: BigInt!
+  nearestStartEpoch: BigInt!
+  nearestEndEpoch: BigInt!
+  tokenA: String!
+  tokenB: String!
+  tokenBChoices: [String!]
+  totalDepositPoolA: BigInt!
+  totalDepositPoolB: BigInt!
+  isPrivate: Boolean!
+  isChallenge: Boolean!
+  invites: [MultiLotInvite!] @derivedFrom(field: "lot")
+  resolved: Boolean!
+  creator: User!
+  isArenaLot: Boolean!
+  # populated post resolve
+  resolveSize: BigInt
+  winningToken: String
+  startPriceTokenA: BigInt
+  startPriceTokenB: BigInt
+  resolvePriceTokenA: BigInt
+  resolvePriceTokenB: BigInt
+  num_deposits: BigInt!
+}
+
+type MultiLotPosition @entity {
+  id: ID!
+  lot: MultiLot!
+  user: User!
+  token: String!
+  size: BigInt!
+  claimed_token: Boolean!
+}
+
+type MultiLotAction @entity {
+  id: ID!
+  tx: Bytes!
+  lot: MultiLot!
+  user: User!
+  type: ActionType!
+  timestamp: BigInt!
+}
+
+type MultiLotInvite @entity {
+  id: ID!
+  lot: MultiLot!
+  from: User!
+  to: User!
+  timestamp: BigInt!
+}
+
+type User @entity {
+  id: ID!
+  positions: [MultiLotPosition!] @derivedFrom(field: "user")
+  actions: [MultiLotAction!] @derivedFrom(field: "user")
+  invites: [MultiLotInvite!] @derivedFrom(field: "to")
+  invited: [MultiLotInvite!] @derivedFrom(field: "from")
+  total_deposit: BigInt!
+  total_claim: BigInt!
+  total_refund: BigInt!
+  num_lots: BigInt!
+  num_winning_lots: BigInt!
+  num_win_streak: BigInt!
+  total_profit: BigInt!
+  total_loss: BigInt!
+}
+
+type UserDailyQuestData @entity {
+  id: ID!
+  date: String!
+  user: String!
+  CREATE_CHALLENGE_LOT: Boolean! # daily, create a lot where isChallenge is true
+  CREATE_MULTI_LOT: Boolean! # daily, create a lot where isChallenge is false
+  CREATE_NFT_LOT: Boolean! # Daily, user creates NFT lot
+  CREATE_INDEX_LOT: Boolean! # Daily, user creates lot with custom indices
+  JOIN_CHALLENGE_LOT: Boolean! # daily, join a lot where isChallenge is true
+  JOIN_MULTI_LOT: Boolean! # daily, join a lot where isChallenge is false
+  JOIN_NFT_LOT: Boolean! # Daily, user joins NFT lot
+  JOIN_DAILY_ARENA: Boolean! # Daily, user joins daily arena lot
+  WIN_LOT: Boolean! # daily,  win a lot
+  WIN_ETH_LOT: Boolean! # Daily, user backs ETH and wins lot
+  WIN_BTC_LOT: Boolean! # Daily, user backs BTC and wins lot
+  WIN_ARB_LOT: Boolean! # Daily, user backs Arbitrum and wins lot
+  WIN_DOGE_LOT: Boolean! # Daily, user backs Doge and wins lot
+  WIN_MATIC_LOT: Boolean! # Daily, user backs MATIC and wins lot
+  WIN_NFT_LOT: Boolean! # Daily, user backs NFT and wins lot
+  WIN_INDEX_LOT: Boolean! # Daily, user backs custom relative index and wins lot
+  WIN_FOREX_LOT: Boolean! # Daily, user backs forex asset and wins lot
+  WIN_STOCK_INDICES_LOT: Boolean! # Daily, user backs stock index and wins lot
+  WIN_COMMODITIES_LOT: Boolean! # Daily, user backs commodities (i.e gold/silver) and wins lot
+  WIN_CROSS_SECTOR_LOT: Boolean! #daily, win cross asset lot
+  WIN_DAILY_ARENA: Boolean! # Daily, user participates in daily arena and backs winning asset
+}
+
+type UserWeeklyQuestData @entity {
+  id: ID!
+  date: String!
+  user: String!
+  JOIN_WEEKLY_ARENA: Boolean! # Weekly, user joins weekly arena lot
+  WIN_WEEKLY_ARENA: Boolean! # Weekly, user participates in weekly arena and backs winning asset
+  WIN_5_IN_ROW: Boolean! # Weekly, user wins 5 lots in a row
+  WIN_10_IN_ROW: Boolean! # Weekly, user wins 10 lots in a row
+  WIN_15_IN_ROW: Boolean! # Weekly, user wins 15 lots in a row
+}
+
+type PendingPriceUpdate @entity {
+  id: ID! # timestamp
+  lotStartIds: [String!]
+  lotResolveIds: [String!]
+}
+
+type AnalyticsOverallData @entity {
+  id: ID! # 0
+  total_unique_user_count: BigInt!
+  avg_lot_duration: BigDecimal!
+
+  total_lots_created_count: BigInt!
+  total_collateral: BigInt!
+  total_active_user_count: BigInt!
+  total_user_winnings: BigInt!
+  total_protocol_fees: BigInt!
+  total_transactional_value: BigInt!
+}
+
+type AnalyticsDailyData @entity {
+  id: ID! # timestamp
+  date: BigInt!
+
+  daily_lots_created_count: BigInt!
+  daily_total_collateral: BigInt!
+  daily_active_user_count: BigInt!
+  daily_user_winnings: BigInt!
+  daily_protocol_fees: BigInt!
+  daily_transactional_value: BigInt!
+}
+
+type LotsPerAssetClassOverallData @entity {
+  id: ID! # Asset Class
+  asset_class: String!
+  lots_created_count: BigInt!
+}
+
+type LotsPerAssetOverallData @entity {
+  id: ID! # Asset
+  asset: String!
+  lots_created_count: BigInt!
+}
+type LotsPerAssetClassDailyData @entity {
+  id: ID! # Asset Class-timestamp
+  asset_class: String!
+  date: BigInt!
+  daily_lots_created_count: BigInt!
+}
+
+type LotsPerAssetDailyData @entity {
+  id: ID! # Asset-timestamp
+  asset: String!
+  date: BigInt!
+  daily_lots_created_count: BigInt!
+}

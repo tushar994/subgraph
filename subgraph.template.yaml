@@ -1,0 +1,61 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MultiLot
+    network: {{network}}
+    source:
+      address: {{{multiLotAddress}}}
+      abi: MultiLot
+      startBlock: {{multiLotStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MultiLot
+        - MultiLotPosition
+        - MultiLotAction
+        - MultiLotInvite
+        - User
+        - UserQuestData
+        - PendingPriceUpdate
+      abis:
+        - name: MultiLot
+          file: abis/MultiLot.json
+      eventHandlers:
+        - event: LotCreated(uint256,string,string[],uint256,uint256,address,bool,bool)
+          handler: handleLotCreated
+        - event: Invited(uint256,address,address[])
+          handler: handleInvited
+        - event: LotJoined(uint256,string,address,uint256)
+          handler: handleLotJoined
+        - event: LotResolved(uint256,uint256,string,uint256,uint256,uint256,uint256)
+          handler: handleLotResolved
+        - event: ClaimWithdrawn(uint256,address,uint256)
+          handler: handleClaimWithdrawn
+        - event: RefundWithdrawn(uint256,address,uint256)
+          handler: handleRefundWithdrawn
+      file: ./src/mappings/MultiLot.ts
+  - kind: ethereum/contract
+    name: PriceFeed
+    network: {{network}}
+    source:
+      address: {{{priceFeedAddress}}}
+      abi: PriceFeed
+      startBlock: {{priceFeedStartBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MultiLot
+        - PendingPriceUpdate
+      abis:
+        - name: PriceFeed
+          file: abis/PriceFeed.json
+      eventHandlers:
+        - event: Stored(uint256,string[],uint256[])
+          handler: handleStored
+      file: ./src/mappings/PriceFeed.ts

@@ -1,0 +1,10 @@
+{
+  "network": "goerli",
+  "multiLotAddress": "'0x441D138F08c717828F3fE6Dae6FeA32f5BC1f667'",
+  "multiLotStartBlock": "8625492",
+
+  "priceFeedAddress": "'0x3Ee543fd47F8B62f57C2ae337fA384eb12Cae9cd'",
+  "priceFeedStartBlock": "8624740",
+
+  "ethereum": true
+}

@@ -1,0 +1,24 @@
+{
+  "name": "relative-subgraph",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --product hosted-service relative-finance/subgraph",
+    "lint": "prettier --check .",
+    "prettier": "prettier --write .",
+    "prepare:polygon": "mustache config/polygon.json subgraph.template.yaml > subgraph.yaml && graph codegen",
+    "prepare:arbitrum": "mustache config/arbitrum.json subgraph.template.yaml > subgraph.yaml && graph codegen",
+    "prepare:goerli": "mustache config/goerli.json subgraph.template.yaml > subgraph.yaml && graph codegen"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.48.0",
+    "@graphprotocol/graph-ts": "0.29.3",
+    "@types/js-yaml": "^4.0.5",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.4.1",
+    "mustache": "^4.2.0"
+  }
+}

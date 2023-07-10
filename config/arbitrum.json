@@ -1,0 +1,10 @@
+{
+    "network": "arbitrum-one",
+    "multiLotAddress": "'0x5178703354F8a1972B5889d5D5CA790Bd6c7324E'",
+    "multiLotStartBlock": "83105595",
+  
+    "priceFeedAddress": "'0x799222AF47549789464557D6324cC6D31b1C7FD0'",
+    "priceFeedStartBlock": "83105223",
+  
+    "ethereum": true
+}

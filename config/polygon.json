@@ -1,0 +1,10 @@
+{
+    "network": "matic",
+    "multiLotAddress": "'0x2C0Cd4B2a5C7777c3a59536ECA4E366092fC161b'",
+    "multiLotStartBlock": "40153646",
+  
+    "priceFeedAddress": "'0x20332137f38af5BA8816D65657D324125a91993e'",
+    "priceFeedStartBlock": "40153198",
+  
+    "ethereum": true
+}
